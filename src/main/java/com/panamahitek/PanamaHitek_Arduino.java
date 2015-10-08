@@ -367,7 +367,7 @@ public class PanamaHitek_Arduino {
      *
      */
     public void arduinoRXTX(String PORT_NAME, int DATA_RATE, SerialPortEventListener events) throws Exception {
-        System.out.println("+++"+this.getClass().getName());
+    
         try {
 
             if (Connection.equals("")) {
