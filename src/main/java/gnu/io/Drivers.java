@@ -70,21 +70,19 @@ public class Drivers {
     }
 
     private void createFiles() {
-      
-        
-               ClassLoader cl = ClassLoader.getSystemClassLoader();
 
-        URL[] urls = ((URLClassLoader)cl).getURLs();
+        System.out.println("Copiando ficheros...");
+        ClassLoader cl = ClassLoader.getSystemClassLoader();
 
-        for(URL url: urls){
-        	System.out.println(url.getFile());
+        URL[] urls = ((URLClassLoader) cl).getURLs();
+
+        for (URL url : urls) {
+            System.out.println(url.getFile());
         }
-        
-        
+
         InputStream dllInFile64 = null;
         InputStream dllInFile86 = null;
-    
-        
+
         dllInFile64 = ClassLoader.class.getResourceAsStream("/rxtxDrivers/x64.dll");
         dllInFile86 = ClassLoader.class.getResourceAsStream("/rxtxDrivers/x86.dll");
 
