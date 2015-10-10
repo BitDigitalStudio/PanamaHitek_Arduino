@@ -1,11 +1,10 @@
 package gnu.io;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -71,10 +70,21 @@ public class Drivers {
     }
 
     private void createFiles() {
-        System.out.print("Copiando ficheros... ");
+      
+        
+               ClassLoader cl = ClassLoader.getSystemClassLoader();
 
+        URL[] urls = ((URLClassLoader)cl).getURLs();
+
+        for(URL url: urls){
+        	System.out.println(url.getFile());
+        }
+        
+        
         InputStream dllInFile64 = null;
         InputStream dllInFile86 = null;
+    
+        
         dllInFile64 = ClassLoader.class.getResourceAsStream("/rxtxDrivers/x64.dll");
         dllInFile86 = ClassLoader.class.getResourceAsStream("/rxtxDrivers/x86.dll");
 

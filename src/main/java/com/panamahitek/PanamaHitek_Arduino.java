@@ -964,7 +964,7 @@ public class PanamaHitek_Arduino {
                 }
 
             }
-            if (flag == false) {
+            if (!flag) {
                 throw new Exception("No se ha encontrado ningún Arduino conectado en el puerto " + PORT_NAME + ". Verifique el puerto en el que está conectado Arduino");
             }
 
