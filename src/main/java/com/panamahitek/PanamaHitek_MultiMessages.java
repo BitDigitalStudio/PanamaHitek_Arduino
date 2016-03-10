@@ -31,29 +31,31 @@ package com.panamahitek;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import jssc.SerialPortException;
 
 /**
  * @author Antony García González, de Proyecto Panama Hitek. Visita
  * http://panamahitek.com
  */
-public class PanamaHitek_MultiMessage {
+public class PanamaHitek_MultiMessages {
 
     //Variables 
-    private int Mensajes = 0;
-    private int lecturas = 0;
-    private List<String> buffer;
-    private boolean ReceptionCompleted = false;
+    private static int mensajes = 0;
+    private static int lecturas = 0;
+    private static List<String> inputBuffer;
     private PanamaHitek_Arduino ino;
-    PanamaHitek_Arduino Arduino = new PanamaHitek_Arduino();
+
     /*Esta clase ha sido diseñada para hacer lectura de múltiples datos, por ejemplo
      de sensores conectados a Arduino sin tener que llevar a cabo complicadas secuencias lógicas
      para discernir entre una lectura y otra.
      */
+    public PanamaHitek_MultiMessages(int messages, PanamaHitek_Arduino InputObject) {
+        this.ino = InputObject;
+        mensajes = messages;
+        inputBuffer = new ArrayList<String>();
 
-    public PanamaHitek_MultiMessage(int Messages, PanamaHitek_Arduino InputObject) {
-        ino = InputObject;
-        Mensajes = Messages;
-        buffer = new ArrayList<String>();
     }
 
     /**
@@ -64,20 +66,30 @@ public class PanamaHitek_MultiMessage {
      * @return TRUE si se ha terminado de leer datos, FALSE si aún no se
      * completa la lectura.
      */
-    public boolean DataReceptionCompleted() {
+    public boolean dataReceptionCompleted() throws ArduinoException, SerialPortException {
+        String str = "";
+        int i = 0;
 
-        if (!ReceptionCompleted) {
-            if (ino.isMessageAvailable()) {
-                buffer.add(ino.printMessage());
-                lecturas++;
+        if (ino.getInputBytesAvailable() > 0) {
+            while (i != mensajes) {
+                if (ino.getInputBytesAvailable() > 0) {
+                    int n = ino.receiveData();
+                    if (n != 10 && n != 13) {
+                        str += (char) n;
+                    } else {
+                        str += n;
+                    }
+                }
+                if (str.contains("1310")) {
+                    i++;
+                    inputBuffer.add(str.replaceAll("1310", ""));
+                    str = "";
+                }
             }
-            if (lecturas == Mensajes) {
-                ReceptionCompleted = true;
-            }
-
+            return true;
+        } else {
+            return false;
         }
-
-        return ReceptionCompleted;
     }
 
     /**
@@ -89,7 +101,7 @@ public class PanamaHitek_MultiMessage {
      */
     public String getMessage(int index) {
 
-        String Output = buffer.get(index);
+        String Output = inputBuffer.get(index);
         return Output;
     }
 
@@ -99,7 +111,7 @@ public class PanamaHitek_MultiMessage {
      * determinada lectura
      */
     public List<String> getMessageList() {
-        return buffer;
+        return inputBuffer.subList(0, mensajes);
     }
 
     /**
@@ -107,8 +119,9 @@ public class PanamaHitek_MultiMessage {
      * para prepararse para una nueva lectura
      */
     public void flushBuffer() {
-        lecturas = 0;
-        ReceptionCompleted = false;
-        buffer.clear();
+
+        for (int i = 0; i < mensajes; i++) {
+            inputBuffer.remove(0);
+        }
     }
 }
