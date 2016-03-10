@@ -38,7 +38,7 @@ import jssc.SerialPortException;
 /**
  * @author Antony García González, de Proyecto Panama Hitek. Visita http://panamahitek.com
  */
-public class PanamaHitek_MultiMessages {
+public class PanamaHitek_MultiMessage {
 
     //Variables 
     private static int mensajes = 0;
@@ -50,7 +50,7 @@ public class PanamaHitek_MultiMessages {
      de sensores conectados a Arduino sin tener que llevar a cabo complicadas secuencias lógicas
      para discernir entre una lectura y otra.
      */
-    public PanamaHitek_MultiMessages(int messages, PanamaHitek_Arduino InputObject) {
+    public PanamaHitek_MultiMessage(int messages, PanamaHitek_Arduino InputObject) {
         this.ino = InputObject;
         mensajes = messages;
         inputBuffer = new ArrayList<String>();
