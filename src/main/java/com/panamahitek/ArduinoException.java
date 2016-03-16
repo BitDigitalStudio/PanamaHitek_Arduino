@@ -31,7 +31,7 @@
  */
 package com.panamahitek;
 
-class ArduinoException extends Exception {
+public class ArduinoException extends Exception {
 
     private static String portName;
     private static String methodName;
